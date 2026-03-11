@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import BrandCard from "@/components/BrandCard";
+import FloatingSupport from "@/components/FloatingSupport";
 import { useCollections } from "@/hooks/useCollections";
 
 const Brands = () => {
@@ -26,6 +27,7 @@ const Brands = () => {
           </div>
         )}
       </div>
+      <FloatingSupport />
     </Layout>
   );
 };

@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import FloatingSupport from "@/components/FloatingSupport";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 
@@ -11,10 +12,10 @@ const About = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-brand text-[10px] text-primary mb-2">ABOUT</p>
-          <h2 className="text-display text-4xl text-foreground mb-8">The Story</h2>
+          <p className="text-[10px] tracking-widest uppercase text-primary mb-2">ABOUT</p>
+          <h2 className="font-display text-4xl text-foreground mb-8">The Story</h2>
 
-          <div className="space-y-6 font-body text-sm text-foreground/80 leading-relaxed">
+          <div className="space-y-6 text-sm text-foreground/80 leading-relaxed">
             <p>
               ByBinBashir started as a passion project — a student-run venture born from a genuine love for watches and the belief that exceptional style shouldn't require an exceptional budget.
             </p>
@@ -30,7 +31,7 @@ const About = () => {
           </div>
 
           <div className="mt-12 pt-8 border-t border-border">
-            <h3 className="text-display text-xl text-foreground mb-4">Get In Touch</h3>
+            <h3 className="font-display text-xl text-foreground mb-4">Get In Touch</h3>
             <div className="space-y-3">
               <a
                 href="https://wa.me/923167530204"
@@ -39,20 +40,22 @@ const About = () => {
                 className="flex items-center gap-3 text-primary hover:text-gold-glow transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span className="font-body text-sm">03167530204</span>
+                <span className="text-sm">03167530204</span>
               </a>
               <a
                 href="https://www.instagram.com/by_binbashir"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-muted-foreground hover:text-primary transition-colors block"
+                className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
               >
-                @by_binbashir on Instagram
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                <span className="text-sm">@by_binbashir on Instagram</span>
               </a>
             </div>
           </div>
         </motion.div>
       </div>
+      <FloatingSupport />
     </Layout>
   );
 };

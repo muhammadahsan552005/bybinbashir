@@ -1,22 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const WatchCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
   const { addToCart } = useCart();
-  const whatsappMsg = encodeURIComponent(
-    `Hi! I'm interested in the ${product.product_name} (${product.product_code}) - PKR ${product.price.toLocaleString()}. Is it available?`
-  );
-  const whatsappUrl = `https://wa.me/923167530204?text=${whatsappMsg}`;
+  const navigate = useNavigate();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product);
     toast.success(`${product.product_name} added to cart`);
+  };
+
+  const handleOrderNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product);
+    toast.success(`${product.product_name} added to cart`);
+    navigate("/cart");
   };
 
   return (
@@ -46,22 +52,28 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-medium text-primary">PKR {product.price.toLocaleString()}</span>
             <div className="flex items-center gap-2" onClick={(e) => e.preventDefault()}>
-              <button
-                onClick={handleAddToCart}
-                className="text-xs text-foreground bg-secondary hover:bg-secondary/80 transition-all duration-300 rounded-full p-2"
-                title="Add to Cart"
-              >
-                <ShoppingBag className="w-3.5 h-3.5" />
-              </button>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-xs text-primary-foreground bg-primary hover:bg-gold-glow transition-all duration-300 rounded-full px-4 py-2"
-              >
-                Order Now
-              </a>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleAddToCart}
+                    className="text-xs text-foreground bg-secondary hover:bg-secondary/80 transition-all duration-300 rounded-full p-2"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Add to Cart</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleOrderNow}
+                    className="text-xs text-primary-foreground bg-primary hover:bg-gold-glow transition-all duration-300 rounded-full px-4 py-2"
+                  >
+                    Order Now
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Buy Now</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>

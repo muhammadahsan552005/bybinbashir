@@ -1,19 +1,27 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import WatchCard from "@/components/WatchCard";
+import FloatingSupport from "@/components/FloatingSupport";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
-import { ShoppingBag, MessageCircle, ChevronLeft } from "lucide-react";
+import { ShoppingBag, ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { addToRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { data: product, isLoading } = useProduct(id);
   const { data: allProducts } = useProducts();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    if (id) addToRecentlyViewed(id);
+  }, [id]);
 
   if (isLoading) {
     return (
@@ -40,14 +48,15 @@ const ProductDetail = () => {
     .filter((p) => p.collection_id === product.collection_id && p.id !== product.id)
     .slice(0, 4);
 
-  const whatsappMsg = encodeURIComponent(
-    `Hi! I would like to order:\n\nProduct: ${product.product_name}\nCode: ${product.product_code}\nPrice: PKR ${product.price.toLocaleString()}\n\nPlease confirm availability. Thank you.`
-  );
-  const whatsappUrl = `https://wa.me/923167530204?text=${whatsappMsg}`;
-
   const handleAddToCart = () => {
     addToCart(product);
     toast.success(`${product.product_name} added to cart`);
+  };
+
+  const handleOrderNow = () => {
+    addToCart(product);
+    toast.success(`${product.product_name} added to cart`);
+    navigate("/cart");
   };
 
   return (
@@ -85,14 +94,24 @@ const ProductDetail = () => {
             <p className="text-sm text-muted-foreground leading-relaxed mb-8">{product.description}</p>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 text-sm bg-primary text-primary-foreground rounded-full px-6 py-3.5 hover:bg-gold-glow transition-all duration-300">
-                <MessageCircle className="w-4 h-4" /> Order Now
-              </a>
-              <button onClick={handleAddToCart}
-                className="flex-1 flex items-center justify-center gap-2 text-sm border border-primary/40 text-primary rounded-full px-6 py-3.5 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                <ShoppingBag className="w-4 h-4" /> Add to Cart
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleOrderNow}
+                    className="flex-1 flex items-center justify-center gap-2 text-sm bg-primary text-primary-foreground rounded-full px-6 py-3.5 hover:bg-gold-glow transition-all duration-300">
+                    <ShoppingBag className="w-4 h-4" /> Order Now
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Buy Now</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleAddToCart}
+                    className="flex-1 flex items-center justify-center gap-2 text-sm border border-primary/40 text-primary rounded-full px-6 py-3.5 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                    <ShoppingBag className="w-4 h-4" /> Add to Cart
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Add to Cart</TooltipContent>
+              </Tooltip>
             </div>
           </motion.div>
         </div>
@@ -108,6 +127,7 @@ const ProductDetail = () => {
           </section>
         )}
       </div>
+      <FloatingSupport />
     </Layout>
   );
 };
