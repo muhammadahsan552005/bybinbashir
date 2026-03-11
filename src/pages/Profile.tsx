@@ -4,7 +4,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { LogOut, Settings, Package, ShieldCheck } from "lucide-react";
+import { LogOut, Settings, Package, ShieldCheck, XCircle } from "lucide-react";
+
+const CANCEL_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
 
 const Profile = () => {
   const { user, profile, isAdmin, signOut, loading, refreshProfile } = useAuth();
@@ -12,6 +14,7 @@ const Profile = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", address: "", city: "" });
+  const [cancelling, setCancelling] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -28,7 +31,7 @@ const Profile = () => {
     }
   }, [profile]);
 
-  useEffect(() => {
+  const fetchOrders = () => {
     if (user) {
       supabase
         .from("orders")
@@ -39,6 +42,10 @@ const Profile = () => {
           if (data) setOrders(data);
         });
     }
+  };
+
+  useEffect(() => {
+    fetchOrders();
   }, [user]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -60,6 +67,30 @@ const Profile = () => {
       setEditing(false);
       refreshProfile();
     }
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    setCancelling(orderId);
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ order_status: "cancelled" })
+        .eq("id", orderId)
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      toast.success("Order cancelled");
+      fetchOrders();
+    } catch {
+      toast.error("Failed to cancel order");
+    } finally {
+      setCancelling(null);
+    }
+  };
+
+  const canCancel = (order: any) => {
+    if (order.order_status !== "pending") return false;
+    const created = new Date(order.created_at).getTime();
+    return Date.now() - created < CANCEL_WINDOW_MS;
   };
 
   const handleSignOut = async () => {
@@ -147,9 +178,21 @@ const Profile = () => {
                 <div key={order.id} className="border border-border rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</span>
-                    <span className={`text-[10px] uppercase tracking-wider px-3 py-1 rounded-full ${statusColor[order.order_status] || "text-muted-foreground bg-secondary"}`}>
-                      {order.order_status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] uppercase tracking-wider px-3 py-1 rounded-full ${statusColor[order.order_status] || "text-muted-foreground bg-secondary"}`}>
+                        {order.order_status}
+                      </span>
+                      {canCancel(order) && (
+                        <button
+                          onClick={() => handleCancelOrder(order.id)}
+                          disabled={cancelling === order.id}
+                          className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 border border-destructive/30 rounded-full px-3 py-1 transition-colors disabled:opacity-50"
+                        >
+                          <XCircle className="w-3 h-3" />
+                          {cancelling === order.id ? "Cancelling..." : "Cancel"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="space-y-1">
                     {order.order_items?.map((item: any) => (

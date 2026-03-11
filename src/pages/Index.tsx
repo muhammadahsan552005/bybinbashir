@@ -5,8 +5,10 @@ import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-reac
 import heroWatch from "@/assets/hero-watch.jpg";
 import { useProducts } from "@/hooks/useProducts";
 import { useCollections } from "@/hooks/useCollections";
+import { useRecentlyViewedIds } from "@/hooks/useRecentlyViewed";
 import WatchCard from "@/components/WatchCard";
 import BrandCard from "@/components/BrandCard";
+import { useState, useMemo } from "react";
 
 const features = [
   { icon: Truck, label: "Nationwide Shipping", desc: "We deliver premium watches to every corner of Pakistan. Fast, secure, and tracked." },
@@ -17,9 +19,45 @@ const features = [
   { icon: Package, label: "Premium Packaging", desc: "Each watch arrives in elegant packaging — because unboxing should feel special too." },
 ];
 
+type FeaturedTab = "featured" | "recent" | "recommended";
+
 const Index = () => {
   const { data: products } = useProducts();
   const { data: collections } = useCollections();
+  const recentIds = useRecentlyViewedIds();
+  const [activeTab, setActiveTab] = useState<FeaturedTab>("featured");
+
+  const displayProducts = useMemo(() => {
+    const all = products || [];
+    if (activeTab === "recent") {
+      const recentProducts = recentIds
+        .map((id) => all.find((p) => p.id === id))
+        .filter(Boolean) as typeof all;
+      return recentProducts.slice(0, 6);
+    }
+    if (activeTab === "recommended") {
+      // Recommend based on recently viewed collections, then popular
+      const viewedCollections = new Set(
+        recentIds
+          .map((id) => all.find((p) => p.id === id)?.collection_id)
+          .filter(Boolean)
+      );
+      if (viewedCollections.size > 0) {
+        const recommended = all
+          .filter((p) => p.collection_id && viewedCollections.has(p.collection_id) && !recentIds.includes(p.id));
+        if (recommended.length >= 3) return recommended.slice(0, 6);
+      }
+      // Fallback: random mix
+      return [...all].sort(() => 0.5 - Math.random()).slice(0, 6);
+    }
+    return all.slice(0, 6);
+  }, [products, activeTab, recentIds]);
+
+  const tabs: { key: FeaturedTab; label: string }[] = [
+    { key: "featured", label: "Featured" },
+    { key: "recent", label: "Recently Viewed" },
+    { key: "recommended", label: "Recommended" },
+  ];
 
   return (
     <Layout>
@@ -46,7 +84,7 @@ const Index = () => {
                 Explore Collection
               </Link>
               <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                Contact Us
+                Support
               </a>
             </div>
           </motion.div>
@@ -82,23 +120,51 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Watches */}
+      {/* Featured Watches with tabs */}
       <section className="py-20 px-6 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div>
               <span className="inline-block text-[10px] tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">COLLECTION</span>
               <h2 className="font-display text-3xl text-foreground">Featured Timepieces</h2>
             </div>
-            <Link to="/shop" className="text-xs text-primary border border-primary/30 rounded-full px-5 py-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-              View All →
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`text-xs px-4 py-2 rounded-full border transition-all duration-300 ${
+                    activeTab === tab.key
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+              <Link to="/shop" className="text-xs text-primary border border-primary/30 rounded-full px-5 py-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                View All →
+              </Link>
+            </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {(products || []).slice(0, 6).map((p, i) => (
-              <WatchCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
+
+          {displayProducts.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-12">
+              {activeTab === "recent" ? "No recently viewed products yet. Browse our collection!" : "No products to show."}
+            </p>
+          ) : (
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+            >
+              {displayProducts.map((p, i) => (
+                <WatchCard key={p.id} product={p} index={i} />
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -155,8 +221,14 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <a href="https://www.instagram.com/by_binbashir" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">Instagram</a>
-            <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">WhatsApp</a>
+            <a href="https://www.instagram.com/by_binbashir" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              Instagram
+            </a>
+            <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
           </div>
           <p className="text-[10px] text-muted-foreground">© 2025 ByBinBashir. All rights reserved.</p>
         </div>

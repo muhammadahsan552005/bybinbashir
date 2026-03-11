@@ -3,6 +3,7 @@ import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -56,9 +57,14 @@ const Cart = () => {
                   <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
-              <button onClick={() => removeFromCart(item.product.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => removeFromCart(item.product.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Remove</TooltipContent>
+              </Tooltip>
             </motion.div>
           ))}
         </div>
