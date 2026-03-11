@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import WatchCard from "@/components/WatchCard";
-import { watches, brands } from "@/data/watches";
+import { useProducts } from "@/hooks/useProducts";
+import { useCollections } from "@/hooks/useCollections";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
@@ -9,26 +10,32 @@ import { Search } from "lucide-react";
 const Shop = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
-  const [activeBrand, setActiveBrand] = useState<string>("All");
+  const [activeCollection, setActiveCollection] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState(initialSearch);
 
+  const { data: products, isLoading } = useProducts();
+  const { data: collections } = useCollections();
+
   const filtered = useMemo(() => {
-    let result = activeBrand === "All" ? watches : watches.filter((w) => w.brand === activeBrand);
+    let result = products || [];
+    if (activeCollection !== "All") {
+      result = result.filter((p) => p.collection_name === activeCollection);
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
-      result = result.filter((w) =>
-        w.name.toLowerCase().includes(q) ||
-        w.code.toLowerCase().includes(q) ||
-        w.brand.toLowerCase().includes(q)
+      result = result.filter(
+        (p) =>
+          p.product_name.toLowerCase().includes(q) ||
+          p.product_code.toLowerCase().includes(q) ||
+          (p.collection_name || "").toLowerCase().includes(q)
       );
     }
     return result;
-  }, [activeBrand, searchQuery]);
+  }, [activeCollection, searchQuery, products]);
 
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-8 lg:py-12">
-        {/* Header */}
         <div className="mb-8">
           <span className="inline-block text-[10px] tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">
             ALL PRODUCTS
@@ -39,7 +46,6 @@ const Shop = () => {
           </p>
         </div>
 
-        {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -51,40 +57,44 @@ const Shop = () => {
           />
         </div>
 
-        {/* Filters */}
         <div className="flex flex-wrap gap-2 mb-8">
-          {["All", ...brands.map((b) => b.name)].map((brand) => (
+          {["All", ...(collections?.map((c) => c.collection_name) || [])].map((name) => (
             <button
-              key={brand}
-              onClick={() => setActiveBrand(brand)}
+              key={name}
+              onClick={() => setActiveCollection(name)}
               className={`text-xs px-5 py-2 transition-all duration-300 rounded-full border ${
-                activeBrand === brand
+                activeCollection === name
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
               }`}
             >
-              {brand}
+              {name}
             </button>
           ))}
         </div>
 
-        {/* Grid */}
-        <motion.div
-          key={activeBrand + searchQuery}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6"
-        >
-          {filtered.map((w, i) => (
-            <WatchCard key={w.id} watch={w} index={i} />
-          ))}
-        </motion.div>
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground text-center py-20">Loading products...</p>
+        ) : (
+          <>
+            <motion.div
+              key={activeCollection + searchQuery}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6"
+            >
+              {filtered.map((p, i) => (
+                <WatchCard key={p.id} product={p} index={i} />
+              ))}
+            </motion.div>
 
-        {filtered.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-20">
-            No watches found. Try a different search or filter.
-          </p>
+            {filtered.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-20">
+                No watches found. Try a different search or filter.
+              </p>
+            )}
+          </>
         )}
       </div>
     </Layout>

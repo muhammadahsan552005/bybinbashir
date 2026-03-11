@@ -1,16 +1,16 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import type { Watch } from "@/data/watches";
+import type { Product } from "@/hooks/useProducts";
 
 export interface CartItem {
-  watch: Watch;
+  product: Product;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (watch: Watch) => void;
-  removeFromCart: (watchId: string) => void;
-  updateQuantity: (watchId: string, quantity: number) => void;
+  addToCart: (product: Product) => void;
+  removeFromCart: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -32,32 +32,32 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("bbb-cart", JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (watch: Watch) => {
+  const addToCart = (product: Product) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.watch.id === watch.id);
+      const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
-        return prev.map((i) => i.watch.id === watch.id ? { ...i, quantity: i.quantity + 1 } : i);
+        return prev.map((i) => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { watch, quantity: 1 }];
+      return [...prev, { product, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (watchId: string) => {
-    setItems((prev) => prev.filter((i) => i.watch.id !== watchId));
+  const removeFromCart = (productId: string) => {
+    setItems((prev) => prev.filter((i) => i.product.id !== productId));
   };
 
-  const updateQuantity = (watchId: string, quantity: number) => {
+  const updateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(watchId);
+      removeFromCart(productId);
       return;
     }
-    setItems((prev) => prev.map((i) => i.watch.id === watchId ? { ...i, quantity } : i));
+    setItems((prev) => prev.map((i) => i.product.id === productId ? { ...i, quantity } : i));
   };
 
   const clearCart = () => setItems([]);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.watch.priceNum * i.quantity, 0);
+  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
 
   return (
     <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }}>

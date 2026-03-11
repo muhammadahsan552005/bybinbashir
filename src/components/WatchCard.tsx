@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
-import type { Watch } from "@/data/watches";
+import type { Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 
-const WatchCard = ({ watch, index = 0 }: { watch: Watch; index?: number }) => {
+const WatchCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
   const { addToCart } = useCart();
-  const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the ${watch.brand} ${watch.name} (${watch.code}) - ${watch.price}. Is it available?`);
+  const whatsappMsg = encodeURIComponent(
+    `Hi! I'm interested in the ${product.product_name} (${product.product_code}) - PKR ${product.price.toLocaleString()}. Is it available?`
+  );
   const whatsappUrl = `https://wa.me/923167530204?text=${whatsappMsg}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(watch);
-    toast.success(`${watch.name} added to cart`);
+    addToCart(product);
+    toast.success(`${product.product_name} added to cart`);
   };
 
   return (
@@ -25,24 +27,24 @@ const WatchCard = ({ watch, index = 0 }: { watch: Watch; index?: number }) => {
       transition={{ duration: 0.5, delay: index * 0.08 }}
     >
       <Link
-        to={`/product/${watch.id}`}
+        to={`/product/${product.id}`}
         className="group block bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[0_8px_40px_-12px_hsl(43_56%_52%/0.15)]"
       >
         <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl">
           <img
-            src={watch.image}
-            alt={`${watch.brand} ${watch.name}`}
+            src={product.images[0]}
+            alt={product.product_name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
         </div>
         <div className="p-4 sm:p-5">
-          <p className="text-[10px] tracking-widest uppercase text-muted-foreground mb-1">{watch.brand}</p>
-          <h3 className="text-sm font-medium text-foreground mb-0.5">{watch.name}</h3>
-          <p className="text-[10px] text-muted-foreground mb-2">Code: {watch.code}</p>
-          <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{watch.description}</p>
+          <p className="text-[10px] tracking-widest uppercase text-muted-foreground mb-1">{product.collection_name}</p>
+          <h3 className="text-sm font-medium text-foreground mb-0.5">{product.product_name}</h3>
+          <p className="text-[10px] text-muted-foreground mb-2">Code: {product.product_code}</p>
+          <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{product.description}</p>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-medium text-primary">{watch.price}</span>
+            <span className="text-sm font-medium text-primary">PKR {product.price.toLocaleString()}</span>
             <div className="flex items-center gap-2" onClick={(e) => e.preventDefault()}>
               <button
                 onClick={handleAddToCart}
