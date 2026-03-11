@@ -1,12 +1,10 @@
-import Sidebar from "./Sidebar";
-import MobileNav from "./MobileNav";
+import Navbar from "./Navbar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
-      <MobileNav />
-      <main className="lg:ml-72 pt-16 lg:pt-0">
+      <Navbar />
+      <main className="pt-16">
         {children}
       </main>
     </div>
