@@ -16,7 +16,9 @@ const Shop = () => {
       <div className="px-8 lg:px-16 py-12 lg:py-20">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-brand text-[10px] text-primary mb-2">SHOP</p>
+          <span className="inline-block text-brand text-[10px] text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">
+            SHOP
+          </span>
           <h2 className="text-display text-4xl text-foreground mb-4">Full Collection</h2>
           <p className="font-body text-sm text-muted-foreground max-w-lg">
             Browse our curated selection of premium timepieces. Order directly via WhatsApp for the fastest service.
@@ -24,15 +26,15 @@ const Shop = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-10 border-b border-border pb-6">
+        <div className="flex flex-wrap gap-3 mb-10 pb-6">
           {["All", ...brands.map((b) => b.name)].map((brand) => (
             <button
               key={brand}
               onClick={() => setActiveBrand(brand)}
-              className={`font-body text-xs px-4 py-2 transition-colors duration-300 border ${
+              className={`font-body text-xs px-5 py-2.5 transition-all duration-300 rounded-full border ${
                 activeBrand === brand
-                  ? "border-primary text-primary"
-                  : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
               }`}
             >
               {brand}
@@ -46,7 +48,7 @@ const Shop = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6"
+          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6"
         >
           {filtered.map((w, i) => (
             <WatchCard key={w.id} watch={w} index={i} />

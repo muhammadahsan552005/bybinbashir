@@ -1,16 +1,49 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Package, Globe, MessageCircle } from "lucide-react";
+import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-react";
 import heroWatch from "@/assets/hero-watch.jpg";
 import { watches, brands } from "@/data/watches";
 import WatchCard from "@/components/WatchCard";
 import BrandCard from "@/components/BrandCard";
 
 const features = [
-  { icon: Package, label: "Nationwide Shipping", desc: "Delivered to your doorstep across Pakistan" },
-  { icon: Globe, label: "Premium Collection", desc: "Curated watches from world-renowned brands" },
-  { icon: MessageCircle, label: "Easy Ordering", desc: "Order via WhatsApp — simple and direct" },
+  {
+    icon: Truck,
+    label: "Nationwide Shipping",
+    desc: "We deliver premium watches to every corner of Pakistan. Fast, secure, and tracked.",
+    emoji: "📦",
+  },
+  {
+    icon: Globe,
+    label: "Premium Collection",
+    desc: "Hand-picked timepieces from world-renowned brands — Rolex, Hublot, Cartier & more.",
+    emoji: "🌍",
+  },
+  {
+    icon: MessageCircle,
+    label: "DM to Order",
+    desc: "No complicated checkout. Simply message us on WhatsApp and we'll handle the rest.",
+    emoji: "📩",
+  },
+  {
+    icon: Shield,
+    label: "Quality Assured",
+    desc: "Every piece is inspected for build quality and aesthetic perfection before shipping.",
+    emoji: "✨",
+  },
+  {
+    icon: Clock,
+    label: "Every Moment",
+    desc: "From daily wear to special occasions, find the perfect watch for every chapter of life.",
+    emoji: "⌚",
+  },
+  {
+    icon: Package,
+    label: "Premium Packaging",
+    desc: "Each watch arrives in elegant packaging — because unboxing should feel special too.",
+    emoji: "🎁",
+  },
 ];
 
 const Index = () => {
@@ -24,8 +57,8 @@ const Index = () => {
             alt="Luxury watch macro detail"
             className="w-full h-full object-cover animate-slow-zoom"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
         </div>
 
         <div className="relative h-full flex flex-col justify-end pb-20 px-8 lg:px-16 max-w-2xl">
@@ -34,17 +67,19 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <p className="text-brand text-xs text-primary mb-4">BYBINBASHIR</p>
-            <h2 className="font-display text-5xl lg:text-7xl font-light text-foreground leading-tight tracking-wide mb-6">
-              Premium Watches for Every Moment
+            <span className="inline-block text-brand text-[10px] text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
+              BYBINBASHIR — PREMIUM WATCHES
+            </span>
+            <h2 className="font-display text-5xl lg:text-7xl font-light text-foreground leading-[1.1] tracking-wide mb-6">
+              Premium Watches<br />for Every Moment
             </h2>
-            <p className="font-body text-sm text-muted-foreground max-w-md mb-8">
-              Curated collection of luxury timepieces. Nationwide delivery across Pakistan.
+            <p className="font-body text-sm text-muted-foreground max-w-md mb-8 leading-relaxed">
+              Curated collection of luxury timepieces from world-renowned brands. Nationwide delivery across Pakistan.
             </p>
             <div className="flex gap-4">
               <Link
                 to="/shop"
-                className="font-body text-sm bg-primary text-primary-foreground px-8 py-3 hover:bg-gold-glow transition-colors duration-300"
+                className="font-body text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]"
               >
                 Explore Collection
               </Link>
@@ -52,7 +87,7 @@ const Index = () => {
                 href="https://wa.me/923167530204"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm border border-primary text-primary px-8 py-3 hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
+                className="font-body text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 Contact Us
               </a>
@@ -61,40 +96,60 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 px-8 lg:px-16 border-t border-border">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Features Section — Prominent */}
+      <section className="py-20 px-8 lg:px-16">
+        <div className="text-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="inline-block text-brand text-[10px] text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">
+              WHY CHOOSE US
+            </span>
+            <h3 className="text-display text-3xl lg:text-4xl text-foreground mb-3">
+              Premium Watches for Every Moment
+            </h3>
+            <p className="font-body text-sm text-muted-foreground max-w-md mx-auto">
+              We bring the luxury watch experience to your doorstep — no showroom needed.
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f, i) => (
             <motion.div
               key={f.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="flex items-start gap-4"
+              transition={{ delay: i * 0.08 }}
+              className="bg-card rounded-2xl border border-border p-6 hover:border-primary/30 transition-all duration-500 hover:shadow-[0_8px_40px_-12px_hsl(43_56%_52%/0.1)] group"
             >
-              <f.icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-              <div>
-                <h4 className="font-body text-sm font-medium text-foreground mb-1">{f.label}</h4>
-                <p className="font-body text-xs text-muted-foreground">{f.desc}</p>
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+                <f.icon className="w-5 h-5 text-primary" />
               </div>
+              <h4 className="font-body text-sm font-medium text-foreground mb-2">{f.label}</h4>
+              <p className="font-body text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Featured Watches */}
-      <section className="py-16 px-8 lg:px-16">
+      <section className="py-20 px-8 lg:px-16">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-brand text-[10px] text-primary mb-2">COLLECTION</p>
+            <span className="inline-block text-brand text-[10px] text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">
+              COLLECTION
+            </span>
             <h3 className="text-display text-3xl text-foreground">Featured Timepieces</h3>
           </div>
-          <Link to="/shop" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
+          <Link to="/shop" className="font-body text-xs text-primary border border-primary/30 rounded-full px-5 py-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
             View All →
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {watches.slice(0, 6).map((w, i) => (
             <WatchCard key={w.id} watch={w} index={i} />
           ))}
@@ -102,36 +157,72 @@ const Index = () => {
       </section>
 
       {/* Brands Preview */}
-      <section className="py-16 px-8 lg:px-16 border-t border-border">
+      <section className="py-20 px-8 lg:px-16">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-brand text-[10px] text-primary mb-2">BRANDS</p>
+            <span className="inline-block text-brand text-[10px] text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-4">
+              BRANDS
+            </span>
             <h3 className="text-display text-3xl text-foreground">Our Houses</h3>
           </div>
-          <Link to="/brands" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
+          <Link to="/brands" className="font-body text-xs text-primary border border-primary/30 rounded-full px-5 py-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
             All Brands →
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {brands.slice(0, 3).map((b, i) => (
             <BrandCard key={b.id} brand={b} index={i} />
           ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-12 px-8 lg:px-16">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h4 className="text-display text-xl text-foreground mb-1">BBB</h4>
-            <p className="text-brand text-[9px] text-muted-foreground">BYBINBASHIR</p>
+      {/* CTA Banner */}
+      <section className="py-16 px-8 lg:px-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-card rounded-3xl border border-border p-10 lg:p-16 text-center relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+          <div className="relative">
+            <h3 className="text-display text-3xl lg:text-4xl text-foreground mb-4">
+              Ready to Find Your Watch?
+            </h3>
+            <p className="font-body text-sm text-muted-foreground max-w-md mx-auto mb-8">
+              Message us on WhatsApp for personalized recommendations, pricing, and fastest delivery options.
+            </p>
+            <a
+              href="https://wa.me/923167530204"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-body text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Order on WhatsApp
+            </a>
           </div>
-          <div className="flex items-center gap-6">
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 py-12 px-8 lg:px-16">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <span className="text-display text-sm font-semibold text-primary">B</span>
+            </div>
+            <div>
+              <h4 className="text-display text-lg text-foreground">BBB</h4>
+              <p className="font-body text-[9px] text-muted-foreground tracking-wider uppercase">ByBinBashir</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
             <a
               href="https://www.instagram.com/by_binbashir"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-body text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="font-body text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30"
             >
               Instagram
             </a>
@@ -139,7 +230,7 @@ const Index = () => {
               href="https://wa.me/923167530204"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-body text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="font-body text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30"
             >
               WhatsApp
             </a>

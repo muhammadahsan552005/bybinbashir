@@ -12,7 +12,7 @@ const BrandCard = ({ brand, index = 0 }: { brand: Brand; index?: number }) => {
     >
       <Link
         to={`/brands/${brand.slug}`}
-        className="group block relative overflow-hidden aspect-[4/5] card-surface"
+        className="group block relative overflow-hidden aspect-[4/5] rounded-2xl border border-border hover:border-primary/30 transition-all duration-500"
       >
         <img
           src={brand.image}
@@ -21,10 +21,13 @@ const BrandCard = ({ brand, index = 0 }: { brand: Brand; index?: number }) => {
           loading="lazy"
         />
         <div className={`absolute inset-0 bg-gradient-to-t ${brand.heroColor} to-transparent`} />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <h3 className="text-display text-2xl text-foreground mb-2">{brand.name}</h3>
           <p className="font-body text-xs text-muted-foreground line-clamp-2">{brand.description}</p>
+          <span className="inline-block mt-3 font-body text-[10px] text-primary border border-primary/40 rounded-full px-3 py-1 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+            Explore →
+          </span>
         </div>
       </Link>
     </motion.div>

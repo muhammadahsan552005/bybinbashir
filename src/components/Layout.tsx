@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <MobileNav />
-      <main className="lg:ml-64 pt-16 lg:pt-0">
+      <main className="lg:ml-72 pt-16 lg:pt-0">
         {children}
       </main>
     </div>
