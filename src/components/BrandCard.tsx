@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Brand } from "@/data/watches";
 import { motion } from "framer-motion";
-
-const BrandCard = ({ brand, index = 0 }: { brand: Brand; index?: number }) => {
+import { forwardRef } from "react";
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
