@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-react";
 import heroWatch from "@/assets/hero-watch.jpg";
-import { watches, brands } from "@/data/watches";
+import { useProducts } from "@/hooks/useProducts";
+import { useCollections } from "@/hooks/useCollections";
 import WatchCard from "@/components/WatchCard";
 import BrandCard from "@/components/BrandCard";
 
@@ -17,6 +18,9 @@ const features = [
 ];
 
 const Index = () => {
+  const { data: products } = useProducts();
+  const { data: collections } = useCollections();
+
   return (
     <Layout>
       {/* Hero */}
@@ -91,8 +95,8 @@ const Index = () => {
             </Link>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {watches.slice(0, 6).map((w, i) => (
-              <WatchCard key={w.id} watch={w} index={i} />
+            {(products || []).slice(0, 6).map((p, i) => (
+              <WatchCard key={p.id} product={p} index={i} />
             ))}
           </div>
         </div>
@@ -111,8 +115,8 @@ const Index = () => {
             </Link>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {brands.slice(0, 3).map((b, i) => (
-              <BrandCard key={b.id} brand={b} index={i} />
+            {(collections || []).slice(0, 3).map((c, i) => (
+              <BrandCard key={c.id} collection={c} index={i} />
             ))}
           </div>
         </div>

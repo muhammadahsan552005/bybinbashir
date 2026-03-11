@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import type { Brand } from "@/data/watches";
+import type { Collection } from "@/hooks/useCollections";
 import { motion } from "framer-motion";
 
-const BrandCard = ({ brand, index = 0 }: { brand: Brand; index?: number }) => {
+const BrandCard = ({ collection, index = 0 }: { collection: Collection; index?: number }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -11,21 +11,25 @@ const BrandCard = ({ brand, index = 0 }: { brand: Brand; index?: number }) => {
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link
-        to={`/brands/${brand.slug}`}
+        to={`/brands/${collection.slug}`}
         className="group block relative overflow-hidden aspect-[4/5] rounded-2xl border border-border hover:border-primary/30 transition-all duration-500"
       >
-        <img
-          src={brand.image}
-          alt={brand.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
-        />
-        <div className={`absolute inset-0 bg-gradient-to-t ${brand.heroColor} to-transparent`} />
+        {collection.image_url ? (
+          <img
+            src={collection.image_url}
+            alt={collection.collection_name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-secondary" />
+        )}
+        <div className={`absolute inset-0 bg-gradient-to-t ${collection.hero_color} to-transparent`} />
         <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h3 className="text-display text-2xl text-foreground mb-2">{brand.name}</h3>
-          <p className="font-body text-xs text-muted-foreground line-clamp-2">{brand.description}</p>
-          <span className="inline-block mt-3 font-body text-[10px] text-primary border border-primary/40 rounded-full px-3 py-1 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+          <h3 className="font-display text-2xl text-foreground mb-2">{collection.collection_name}</h3>
+          <p className="text-xs text-muted-foreground line-clamp-2">{collection.description}</p>
+          <span className="inline-block mt-3 text-[10px] text-primary border border-primary/40 rounded-full px-3 py-1 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
             Explore →
           </span>
         </div>
