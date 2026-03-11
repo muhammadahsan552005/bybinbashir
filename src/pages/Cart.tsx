@@ -32,47 +32,43 @@ const Cart = () => {
         <div className="space-y-4 mb-8">
           {items.map((item, i) => (
             <motion.div
-              key={item.watch.id}
+              key={item.product.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               className="flex items-center gap-4 sm:gap-6 bg-card rounded-2xl border border-border p-4"
             >
-              <Link to={`/product/${item.watch.id}`} className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
-                <img src={item.watch.image} alt={item.watch.name} className="w-full h-full object-cover" />
+              <Link to={`/product/${item.product.id}`} className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
+                <img src={item.product.images[0]} alt={item.product.product_name} className="w-full h-full object-cover" />
               </Link>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] tracking-widest uppercase text-muted-foreground">{item.watch.brand}</p>
-                <h3 className="text-sm font-medium text-foreground truncate">{item.watch.name}</h3>
-                <p className="text-xs text-muted-foreground">Code: {item.watch.code}</p>
-                <p className="text-sm font-medium text-primary mt-1">{item.watch.price}</p>
+                <p className="text-[10px] tracking-widest uppercase text-muted-foreground">{item.product.collection_name}</p>
+                <h3 className="text-sm font-medium text-foreground truncate">{item.product.product_name}</h3>
+                <p className="text-xs text-muted-foreground">Code: {item.product.product_code}</p>
+                <p className="text-sm font-medium text-primary mt-1">PKR {item.product.price.toLocaleString()}</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => updateQuantity(item.watch.id, item.quantity - 1)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors">
+                <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors">
                   <Minus className="w-3.5 h-3.5" />
                 </button>
                 <span className="text-sm font-medium text-foreground w-6 text-center">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.watch.id, item.quantity + 1)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors">
+                <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors">
                   <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
-              <button onClick={() => removeFromCart(item.watch.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+              <button onClick={() => removeFromCart(item.product.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </motion.div>
           ))}
         </div>
 
-        {/* Summary */}
         <div className="bg-card rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <span className="text-sm text-muted-foreground">Total</span>
             <span className="text-xl font-medium text-primary">PKR {totalPrice.toLocaleString()}</span>
           </div>
-          <Link
-            to="/checkout"
-            className="block w-full text-center text-sm bg-primary text-primary-foreground rounded-full py-3.5 hover:bg-gold-glow transition-all duration-300"
-          >
+          <Link to="/checkout" className="block w-full text-center text-sm bg-primary text-primary-foreground rounded-full py-3.5 hover:bg-gold-glow transition-all duration-300">
             Proceed to Checkout
           </Link>
         </div>
