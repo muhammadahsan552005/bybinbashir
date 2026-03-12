@@ -1,13 +1,12 @@
 import Layout from "@/components/Layout";
 import WatchCard from "@/components/WatchCard";
 import FloatingSupport from "@/components/FloatingSupport";
+import SearchFilters from "@/components/SearchFilters";
 import { useCollection } from "@/hooks/useCollections";
 import { useProducts } from "@/hooks/useProducts";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
-import { SlidersHorizontal } from "lucide-react";
-import { Slider } from "@/components/ui/slider";
 
 const BrandDetail = () => {
   const { slug } = useParams();
@@ -58,42 +57,16 @@ const BrandDetail = () => {
       </section>
 
       <section className="px-8 lg:px-16 py-16">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 gap-4">
           <div>
             <p className="text-[10px] tracking-widest uppercase text-primary mb-2">{collection.collection_name.toUpperCase()} COLLECTION</p>
             <h3 className="font-display text-2xl text-foreground">{brandProducts.length} Timepiece{brandProducts.length !== 1 ? "s" : ""}</h3>
           </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs transition-all ${
-              showFilters ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"
-            }`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
-          </button>
+          <SearchFilters showFilters={showFilters} setShowFilters={setShowFilters}
+            sortBy={sortBy} setSortBy={setSortBy} priceRange={priceRange} setPriceRange={setPriceRange} maxPrice={maxPrice} />
         </div>
 
-        {showFilters && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card border border-border rounded-xl p-5 mb-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="flex-1">
-                <label className="text-xs text-muted-foreground mb-2 block">Sort by Price</label>
-                <div className="flex gap-2">
-                  {[{ value: "default", label: "Default" }, { value: "low-high", label: "Low to High" }, { value: "high-low", label: "High to Low" }].map((opt) => (
-                    <button key={opt.value} onClick={() => setSortBy(opt.value)}
-                      className={`text-xs px-4 py-2 rounded-full border transition-all ${sortBy === opt.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"}`}>
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <label className="text-xs text-muted-foreground mb-2 block">Price: PKR {priceRange[0].toLocaleString()} — PKR {priceRange[1].toLocaleString()}</label>
-                <Slider min={0} max={maxPrice} step={1000} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} />
-              </div>
-            </div>
-          </motion.div>
-        )}
+        {showFilters && <div className="mb-6" />}
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {brandProducts.map((p, i) => (
