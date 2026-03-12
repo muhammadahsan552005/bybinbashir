@@ -15,7 +15,7 @@ const FloatingSupport = () => {
             <MessageCircle className="w-6 h-6" />
           </a>
         </TooltipTrigger>
-        <TooltipContent side="left">Support</TooltipContent>
+        <TooltipContent side="left">Contact Us</TooltipContent>
       </Tooltip>
     </div>
   );
