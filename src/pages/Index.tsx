@@ -84,7 +84,7 @@ const Index = () => {
                 Explore Collection
               </Link>
               <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                Support
+                Contact Us
               </a>
             </div>
           </motion.div>

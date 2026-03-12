@@ -9,10 +9,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 const WatchCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const outOfStock = product.stock_quantity <= 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (outOfStock) return;
     addToCart(product);
     toast.success(`${product.product_name} added to cart`);
   };
@@ -20,6 +22,7 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
   const handleOrderNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (outOfStock) return;
     addToCart(product);
     toast.success(`${product.product_name} added to cart`);
     navigate("/cart");
@@ -36,13 +39,16 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
         to={`/product/${product.id}`}
         className="group block bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[0_8px_40px_-12px_hsl(43_56%_52%/0.15)]"
       >
-        <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl">
-          <img
-            src={product.images[0]}
-            alt={product.product_name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            loading="lazy"
-          />
+        <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl relative">
+          <img src={product.images[0]} alt={product.product_name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+          {outOfStock && (
+            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+              <span className="text-xs font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-full px-4 py-1.5">
+                Out of Stock
+              </span>
+            </div>
+          )}
         </div>
         <div className="p-4 sm:p-5">
           <p className="text-[10px] tracking-widest uppercase text-muted-foreground mb-1">{product.collection_name}</p>
@@ -54,25 +60,21 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
             <div className="flex items-center gap-2" onClick={(e) => e.preventDefault()}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button
-                    onClick={handleAddToCart}
-                    className="text-xs text-foreground bg-secondary hover:bg-secondary/80 transition-all duration-300 rounded-full p-2"
-                  >
+                  <button onClick={handleAddToCart} disabled={outOfStock}
+                    className="text-xs text-foreground bg-secondary hover:bg-secondary/80 transition-all duration-300 rounded-full p-2 disabled:opacity-50 disabled:cursor-not-allowed">
                     <ShoppingBag className="w-3.5 h-3.5" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>Add to Cart</TooltipContent>
+                <TooltipContent>{outOfStock ? "Out of Stock" : "Add to Cart"}</TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button
-                    onClick={handleOrderNow}
-                    className="text-xs text-primary-foreground bg-primary hover:bg-gold-glow transition-all duration-300 rounded-full px-4 py-2"
-                  >
+                  <button onClick={handleOrderNow} disabled={outOfStock}
+                    className="text-xs text-primary-foreground bg-primary hover:bg-gold-glow transition-all duration-300 rounded-full px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed">
                     Order Now
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>Buy Now</TooltipContent>
+                <TooltipContent>{outOfStock ? "Out of Stock" : "Buy Now"}</TooltipContent>
               </Tooltip>
             </div>
           </div>
