@@ -6,7 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { LogOut, Settings, Package, ShieldCheck, XCircle } from "lucide-react";
 
-const CANCEL_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+const CANCEL_WINDOW_MS = 30 * 60 * 1000;
+
+type OrderFilter = "all" | "active" | "completed" | "cancelled";
 
 const Profile = () => {
   const { user, profile, isAdmin, signOut, loading, refreshProfile } = useAuth();
@@ -15,6 +17,7 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", address: "", city: "" });
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [orderFilter, setOrderFilter] = useState<OrderFilter>("all");
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -109,6 +112,21 @@ const Profile = () => {
     cancelled: "text-red-400 bg-red-400/10",
   };
 
+  const filteredOrders = orders.filter((o) => {
+    if (orderFilter === "all") return true;
+    if (orderFilter === "active") return ["pending", "confirmed", "shipped"].includes(o.order_status);
+    if (orderFilter === "completed") return o.order_status === "delivered";
+    if (orderFilter === "cancelled") return o.order_status === "cancelled";
+    return true;
+  });
+
+  const orderCounts = {
+    all: orders.length,
+    active: orders.filter((o) => ["pending", "confirmed", "shipped"].includes(o.order_status)).length,
+    completed: orders.filter((o) => o.order_status === "delivered").length,
+    cancelled: orders.filter((o) => o.order_status === "cancelled").length,
+  };
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 lg:py-12">
@@ -119,10 +137,8 @@ const Profile = () => {
           </div>
           <div className="flex items-center gap-2">
             {isAdmin && (
-              <Link
-                to="/admin"
-                className="flex items-center gap-2 text-xs bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-2 hover:bg-primary/20 transition-colors"
-              >
+              <Link to="/admin"
+                className="flex items-center gap-2 text-xs bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-2 hover:bg-primary/20 transition-colors">
                 <ShieldCheck className="w-3.5 h-3.5" /> Admin Panel
               </Link>
             )}
@@ -170,11 +186,30 @@ const Profile = () => {
           <h3 className="text-sm font-medium text-foreground flex items-center gap-2 mb-4">
             <Package className="w-4 h-4 text-primary" /> Order History
           </h3>
-          {orders.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">No orders yet. <Link to="/shop" className="text-primary hover:underline">Start shopping →</Link></p>
+
+          {/* Order filter tabs */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {(["all", "active", "completed", "cancelled"] as OrderFilter[]).map((f) => (
+              <button key={f} onClick={() => setOrderFilter(f)}
+                className={`text-xs px-4 py-1.5 rounded-full border transition-all ${
+                  orderFilter === f ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"
+                }`}>
+                {f.charAt(0).toUpperCase() + f.slice(1)} ({orderCounts[f]})
+              </button>
+            ))}
+          </div>
+
+          {filteredOrders.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-8 text-center">
+              {orderFilter === "all" ? (
+                <>No orders yet. <Link to="/shop" className="text-primary hover:underline">Start shopping →</Link></>
+              ) : (
+                `No ${orderFilter} orders.`
+              )}
+            </p>
           ) : (
             <div className="space-y-4">
-              {orders.map((order: any) => (
+              {filteredOrders.map((order: any) => (
                 <div key={order.id} className="border border-border rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</span>
@@ -183,11 +218,8 @@ const Profile = () => {
                         {order.order_status}
                       </span>
                       {canCancel(order) && (
-                        <button
-                          onClick={() => handleCancelOrder(order.id)}
-                          disabled={cancelling === order.id}
-                          className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 border border-destructive/30 rounded-full px-3 py-1 transition-colors disabled:opacity-50"
-                        >
+                        <button onClick={() => handleCancelOrder(order.id)} disabled={cancelling === order.id}
+                          className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 border border-destructive/30 rounded-full px-3 py-1 transition-colors disabled:opacity-50">
                           <XCircle className="w-3 h-3" />
                           {cancelling === order.id ? "Cancelling..." : "Cancel"}
                         </button>
