@@ -213,11 +213,8 @@ const Index = () => {
       <footer className="border-t border-border/50 py-12 px-6 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="ByBinBashir" className="w-10 h-10 rounded-xl object-cover" />
-            <div>
-              <h4 className="font-display text-lg text-foreground">BBB</h4>
-              <p className="text-[9px] text-muted-foreground tracking-wider uppercase">ByBinBashir</p>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-11 h-11 rounded-full object-cover" />
+            <p className="text-[9px] text-muted-foreground tracking-wider uppercase">ByBinBashir</p>
           </div>
           <div className="flex items-center gap-4">
             <a href="https://www.instagram.com/by_binbashir" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">

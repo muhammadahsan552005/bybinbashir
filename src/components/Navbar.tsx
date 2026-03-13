@@ -59,9 +59,8 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="ByBinBashir" className="h-9 w-9 rounded-xl object-cover" />
-            <span className="font-display text-lg font-light tracking-[0.15em] text-foreground hidden sm:inline">BBB</span>
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="ByBinBashir" className="h-11 w-11 rounded-full object-cover" />
           </Link>
 
           <div className="flex items-center gap-1">

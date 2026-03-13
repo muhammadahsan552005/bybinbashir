@@ -34,12 +34,13 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="h-full"
     >
       <Link
         to={`/product/${product.id}`}
-        className="group block bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[0_8px_40px_-12px_hsl(43_56%_52%/0.15)]"
+        className="group flex flex-col bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[0_8px_40px_-12px_hsl(43_56%_52%/0.15)] h-full"
       >
-        <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl relative">
+        <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl relative flex-shrink-0">
           <img src={product.images[0]} alt={product.product_name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
           {outOfStock && (
@@ -50,12 +51,12 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
             </div>
           )}
         </div>
-        <div className="p-4 sm:p-5">
+        <div className="p-4 sm:p-5 flex flex-col flex-1">
           <p className="text-[10px] tracking-widest uppercase text-muted-foreground mb-1">{product.collection_name}</p>
-          <h3 className="text-sm font-medium text-foreground mb-0.5">{product.product_name}</h3>
+          <h3 className="text-sm font-medium text-foreground mb-0.5 line-clamp-1">{product.product_name}</h3>
           <p className="text-[10px] text-muted-foreground mb-2">Code: {product.product_code}</p>
-          <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{product.description}</p>
-          <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground mb-4 line-clamp-2 flex-1">{product.description}</p>
+          <div className="flex items-center justify-between gap-2 mt-auto">
             <span className="text-sm font-medium text-primary">PKR {product.price.toLocaleString()}</span>
             <div className="flex items-center gap-2" onClick={(e) => e.preventDefault()}>
               <Tooltip>
