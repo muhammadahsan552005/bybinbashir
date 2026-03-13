@@ -212,9 +212,7 @@ const Index = () => {
       <footer className="border-t border-border/50 py-12 px-6 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="font-display text-sm font-semibold text-primary">B</span>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-10 h-10 rounded-xl object-cover" />
             <div>
               <h4 className="font-display text-lg text-foreground">BBB</h4>
               <p className="text-[9px] text-muted-foreground tracking-wider uppercase">ByBinBashir</p>
