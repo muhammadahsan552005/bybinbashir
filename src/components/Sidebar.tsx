@@ -20,15 +20,10 @@ const Sidebar = () => {
       <div>
         <Link to="/" className="block mb-14">
           <div className="inline-flex items-center gap-3">
-            <img src={logo} alt="ByBinBashir" className="w-12 h-12 rounded-xl object-cover" />
-            <div>
-              <h1 className="text-display text-xl font-light tracking-[0.15em] text-foreground">
-                BBB
-              </h1>
-              <p className="font-body text-[9px] tracking-[0.2em] text-muted-foreground uppercase">
-                ByBinBashir
-              </p>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-14 h-14 rounded-full object-cover" />
+            <p className="font-body text-[9px] tracking-[0.2em] text-muted-foreground uppercase">
+              ByBinBashir
+            </p>
           </div>
         </Link>
 
