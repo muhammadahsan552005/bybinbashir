@@ -167,7 +167,7 @@ const Checkout = () => {
       }
 
       const message = buildWhatsAppMessage();
-      const whatsappUrl = `https://wa.me/923167530204?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/923276266204?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
       clearCart();
       toast.success("Order placed! WhatsApp opened.");

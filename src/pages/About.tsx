@@ -40,7 +40,7 @@ const About = () => {
                 className="flex items-center gap-3 text-primary hover:text-gold-glow transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span className="text-sm">03167530204</span>
+                <span className="text-sm">0327 6266204</span>
               </a>
               <a
                 href="https://www.instagram.com/by_binbashir"

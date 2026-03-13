@@ -7,7 +7,7 @@ const FloatingSupport = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <a
-            href="https://wa.me/923167530204"
+            href="https://wa.me/923276266204"
             target="_blank"
             rel="noopener noreferrer"
             className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]"

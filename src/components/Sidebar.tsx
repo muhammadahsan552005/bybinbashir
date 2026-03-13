@@ -8,7 +8,7 @@ const navItems = [
   { label: "About", path: "/about" },
 ];
 
-const WHATSAPP_URL = "https://wa.me/923167530204";
+const WHATSAPP_URL = "https://wa.me/923276266204";
 
 const Sidebar = () => {
   const location = useLocation();
