@@ -199,7 +199,7 @@ const Index = () => {
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8">
                 Message us on WhatsApp for personalized recommendations, pricing, and fastest delivery options.
               </p>
-              <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/923276266204" target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]">
                 <MessageCircle className="w-4 h-4" /> Order on WhatsApp
               </a>
