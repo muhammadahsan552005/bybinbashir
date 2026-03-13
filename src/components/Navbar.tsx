@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import logo from "@/assets/logo.jpg";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -59,9 +60,7 @@ const Navbar = () => {
           </nav>
 
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="font-display text-sm font-semibold text-primary">B</span>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="h-9 w-9 rounded-xl object-cover" />
             <span className="font-display text-lg font-light tracking-[0.15em] text-foreground hidden sm:inline">BBB</span>
           </Link>
 

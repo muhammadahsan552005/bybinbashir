@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-react";
 import heroWatch from "@/assets/hero-watch.jpg";
+import logo from "@/assets/logo.jpg";
 import { useProducts } from "@/hooks/useProducts";
 import { useCollections } from "@/hooks/useCollections";
 import { useRecentlyViewedIds } from "@/hooks/useRecentlyViewed";
@@ -83,7 +84,7 @@ const Index = () => {
               <Link to="/shop" className="text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]">
                 Explore Collection
               </Link>
-              <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <a href="https://wa.me/923276266204" target="_blank" rel="noopener noreferrer" className="text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                 Contact Us
               </a>
             </div>
@@ -199,7 +200,7 @@ const Index = () => {
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8">
                 Message us on WhatsApp for personalized recommendations, pricing, and fastest delivery options.
               </p>
-              <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/923276266204" target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]">
                 <MessageCircle className="w-4 h-4" /> Order on WhatsApp
               </a>
@@ -212,9 +213,7 @@ const Index = () => {
       <footer className="border-t border-border/50 py-12 px-6 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="font-display text-sm font-semibold text-primary">B</span>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-10 h-10 rounded-xl object-cover" />
             <div>
               <h4 className="font-display text-lg text-foreground">BBB</h4>
               <p className="text-[9px] text-muted-foreground tracking-wider uppercase">ByBinBashir</p>
@@ -225,7 +224,7 @@ const Index = () => {
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               Instagram
             </a>
-            <a href="https://wa.me/923167530204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">
+            <a href="https://wa.me/923276266204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border rounded-full px-4 py-2 hover:border-primary/30">
               <MessageCircle className="w-4 h-4" />
               WhatsApp
             </a>

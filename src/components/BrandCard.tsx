@@ -1,22 +1,37 @@
 import { Link } from "react-router-dom";
 import type { Collection } from "@/hooks/useCollections";
 import { motion } from "framer-motion";
+import { useProducts } from "@/hooks/useProducts";
+import { useMemo } from "react";
 
 const BrandCard = ({ collection, index = 0 }: { collection: Collection; index?: number }) => {
+  const { data: products } = useProducts();
+
+  const displayImage = useMemo(() => {
+    if (!products) return collection.image_url;
+    const collectionProducts = products.filter(
+      (p) => p.collection_id === collection.id && p.images[0] && p.images[0] !== "/placeholder.svg"
+    );
+    if (collectionProducts.length === 0) return collection.image_url;
+    const randomProduct = collectionProducts[Math.floor(Math.random() * collectionProducts.length)];
+    return randomProduct.images[0];
+  }, [products, collection.id, collection.image_url]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="h-full"
     >
       <Link
         to={`/brands/${collection.slug}`}
-        className="group block relative overflow-hidden aspect-[4/5] rounded-2xl border border-border hover:border-primary/30 transition-all duration-500"
+        className="group block relative overflow-hidden aspect-[4/5] rounded-2xl border border-border hover:border-primary/30 transition-all duration-500 h-full"
       >
-        {collection.image_url ? (
+        {displayImage ? (
           <img
-            src={collection.image_url}
+            src={displayImage}
             alt={collection.collection_name}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"

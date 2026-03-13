@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -8,7 +9,7 @@ const navItems = [
   { label: "About", path: "/about" },
 ];
 
-const WHATSAPP_URL = "https://wa.me/923167530204";
+const WHATSAPP_URL = "https://wa.me/923276266204";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -19,9 +20,7 @@ const Sidebar = () => {
       <div>
         <Link to="/" className="block mb-14">
           <div className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="text-display text-lg font-semibold text-primary tracking-wider">B</span>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-12 h-12 rounded-xl object-cover" />
             <div>
               <h1 className="text-display text-xl font-light tracking-[0.15em] text-foreground">
                 BBB
