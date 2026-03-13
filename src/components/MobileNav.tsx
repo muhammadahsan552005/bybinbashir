@@ -20,9 +20,7 @@ const MobileNav = () => {
     <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
       <div className="flex items-center justify-between px-5 py-4">
         <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-            <span className="text-display text-xs font-semibold text-primary">B</span>
-          </div>
+          <img src={logo} alt="ByBinBashir" className="w-8 h-8 rounded-lg object-cover" />
           <span className="text-display text-base font-light tracking-[0.15em] text-foreground">BBB</span>
         </Link>
 

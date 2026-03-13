@@ -20,9 +20,7 @@ const Sidebar = () => {
       <div>
         <Link to="/" className="block mb-14">
           <div className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="text-display text-lg font-semibold text-primary tracking-wider">B</span>
-            </div>
+            <img src={logo} alt="ByBinBashir" className="w-12 h-12 rounded-xl object-cover" />
             <div>
               <h1 className="text-display text-xl font-light tracking-[0.15em] text-foreground">
                 BBB
