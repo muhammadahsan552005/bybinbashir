@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-react";
 import heroWatch from "@/assets/hero-watch.jpg";
+import logo from "@/assets/logo.jpg";
 import { useProducts } from "@/hooks/useProducts";
 import { useCollections } from "@/hooks/useCollections";
 import { useRecentlyViewedIds } from "@/hooks/useRecentlyViewed";
