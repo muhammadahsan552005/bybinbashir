@@ -34,7 +34,7 @@ const About = () => {
             <h3 className="font-display text-xl text-foreground mb-4">Get In Touch</h3>
             <div className="space-y-3">
               <a
-                href="https://wa.me/923167530204"
+                href="https://wa.me/923276266204"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-primary hover:text-gold-glow transition-colors"
