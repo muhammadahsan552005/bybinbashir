@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 const navItems = [
   { label: "Home", path: "/" },
