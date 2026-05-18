@@ -5,8 +5,80 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageCircle, Globe } from "lucide-react";
+import { MessageCircle, Globe, CreditCard } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
+// Dummy test key for rendering Stripe Elements. In production, this would be your actual public key.
+const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
+
+const StripePaymentForm = ({ onPaymentSuccess, disabled }: { onPaymentSuccess: () => void, disabled: boolean }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    setProcessing(true);
+    
+    // Create token purely to validate the card UI securely on the frontend.
+    const { error } = await stripe.createToken(cardElement);
+
+    if (error) {
+      toast.error(error.message);
+      setProcessing(false);
+    } else {
+      // Simulate backend payment intent processing
+      setTimeout(() => {
+        setProcessing(false);
+        onPaymentSuccess();
+      }, 1500);
+    }
+  };
+
+  return (
+    <div className="mt-8 border-t border-border pt-6">
+      <h3 className="text-sm font-medium text-foreground mb-4 flex items-center gap-2">
+        <CreditCard className="w-4 h-4 text-primary" /> Pay with Card (Stripe Test Mode)
+      </h3>
+      <div className="bg-background border border-border p-4 rounded-xl mb-4 focus-within:border-primary/50 transition-colors">
+        <CardElement options={{
+          style: {
+            base: {
+              fontSize: '14px',
+              color: '#ffffff',
+              '::placeholder': {
+                color: '#aab7c4',
+              },
+              iconColor: '#D4AF37'
+            },
+            invalid: {
+              color: '#ef4444',
+            },
+          },
+        }} />
+      </div>
+      <button 
+        type="button"
+        onClick={handleSubmit}
+        disabled={disabled || processing || !stripe}
+        className="w-full flex items-center justify-center gap-2 text-sm bg-primary text-primary-foreground rounded-full py-3.5 hover:bg-gold-glow transition-all duration-300 disabled:opacity-50"
+      >
+        <CreditCard className="w-4 h-4" />
+        {processing ? "Processing Payment..." : "Pay Securely"}
+      </button>
+      <p className="text-[10px] text-muted-foreground text-center mt-3">
+        Use <span className="font-mono text-primary">4242 4242 4242 4242</span> for testing.
+      </p>
+    </div>
+  );
+};
 
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -86,7 +158,7 @@ const Checkout = () => {
     return `Hello, I would like to place an order.\n\nCustomer Name: ${form.name.trim()}\nPhone Number: ${form.phone.trim()}\nAddress: ${form.address.trim()}\nCity: ${form.city.trim()}${form.notes.trim() ? `\nNotes: ${form.notes.trim()}` : ""}\n\nOrder Details:\n\n${orderLines}\n\nTotal Price: PKR ${totalPrice.toLocaleString()}\n\nPlease confirm my order. Thank you.`;
   };
 
-  const handleWebsiteOrder = async () => {
+  const handleWebsiteOrder = async (status: "pending" | "paid" = "pending") => {
     if (!validateForm()) return;
     if (!user) {
       toast.error("Please sign in to place orders through the website");
@@ -104,7 +176,7 @@ const Checkout = () => {
           city: form.city.trim(),
           notes: form.notes.trim() || null,
           total_price: totalPrice,
-          order_status: "pending",
+          order_status: status,
         })
         .select()
         .single();
@@ -142,7 +214,7 @@ const Checkout = () => {
       }
 
       clearCart();
-      toast.success("Order placed successfully! You can track it in your profile.");
+      toast.success(status === "paid" ? "Payment successful! Order placed." : "Order placed successfully!");
       navigate("/profile");
     } catch (err: any) {
       toast.error(err.message || "Failed to place order");
@@ -155,7 +227,6 @@ const Checkout = () => {
     if (!validateForm()) return;
     setSubmitting(true);
     try {
-      // Save order if logged in
       if (user) {
         const { data: order, error: orderErr } = await supabase
           .from("orders")
@@ -201,7 +272,7 @@ const Checkout = () => {
 
   return (
     <Layout>
-      <div className="max-w-2xl mx-auto px-4 sm:px-8 py-8 lg:py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-8 lg:py-12">
         <h1 className="font-display text-3xl text-foreground mb-8">Checkout</h1>
 
         {guestMode && (
@@ -210,74 +281,107 @@ const Checkout = () => {
           </div>
         )}
 
-        {/* Order Summary */}
-        <div className="bg-card rounded-2xl border border-border p-5 mb-8">
-          <h3 className="text-sm font-medium text-foreground mb-4">Order Summary</h3>
-          <div className="space-y-3">
-            {items.map((item) => (
-              <div key={item.product.id} className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{item.product.product_name} × {item.quantity}</span>
-                <span className="text-foreground">PKR {(item.product.price * item.quantity).toLocaleString()}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Order Summary & Payment - Right Column on Desktop */}
+          <div className="lg:col-span-2 lg:order-2 space-y-6">
+            <div className="bg-card rounded-2xl border border-border p-6 sticky top-24">
+              <h3 className="text-sm font-medium text-foreground mb-4">Order Summary</h3>
+              <div className="space-y-3 mb-6">
+                {items.map((item) => (
+                  <div key={item.product.id} className="flex items-start justify-between text-sm">
+                    <div className="flex gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-secondary overflow-hidden shrink-0">
+                        <img src={item.product.images[0]} alt={item.product.product_name} className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <p className="text-foreground line-clamp-1">{item.product.product_name}</p>
+                        <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <span className="text-foreground shrink-0 pl-4">PKR {(item.product.price * item.quantity).toLocaleString()}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+              <div className="border-t border-border pt-4 flex items-center justify-between">
+                <span className="text-sm font-medium text-foreground">Total</span>
+                <span className="text-xl font-medium text-primary">PKR {totalPrice.toLocaleString()}</span>
+              </div>
+              
+              {user && (
+                <div className="mt-6">
+                  <Elements stripe={stripePromise}>
+                    <StripePaymentForm 
+                      onPaymentSuccess={() => handleWebsiteOrder("paid")} 
+                      disabled={submitting || !form.name.trim() || !form.phone.trim() || !form.address.trim() || !form.city.trim()} 
+                    />
+                  </Elements>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="border-t border-border mt-4 pt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-foreground">Total</span>
-            <span className="text-lg font-medium text-primary">PKR {totalPrice.toLocaleString()}</span>
+
+          {/* Form - Left Column on Desktop */}
+          <div className="lg:col-span-3 lg:order-1">
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <h3 className="text-sm font-medium text-foreground mb-4">Shipping Details</h3>
+              <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs text-muted-foreground mb-1.5">Customer Name *</label>
+                    <input name="name" value={form.name} onChange={handleChange} required maxLength={100}
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
+                      placeholder="Your full name" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-muted-foreground mb-1.5">Phone Number *</label>
+                    <input name="phone" value={form.phone} onChange={handleChange} required maxLength={20}
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
+                      placeholder="03XX XXXXXXX" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-muted-foreground mb-1.5">City *</label>
+                    <input name="city" value={form.city} onChange={handleChange} required maxLength={50}
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
+                      placeholder="Your city" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs text-muted-foreground mb-1.5">Delivery Address *</label>
+                    <input name="address" value={form.address} onChange={handleChange} required maxLength={200}
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
+                      placeholder="Full delivery address" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs text-muted-foreground mb-1.5">Notes (optional)</label>
+                    <textarea name="notes" value={form.notes} onChange={handleChange} maxLength={500} rows={3}
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors resize-none"
+                      placeholder="Any special instructions..." />
+                  </div>
+                </div>
+
+                <div className="mt-8 border-t border-border pt-6">
+                  <h3 className="text-sm font-medium text-foreground mb-4">Other Payment Options</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {user && (
+                      <button type="button" onClick={() => handleWebsiteOrder("pending")} disabled={submitting}
+                        className="flex items-center justify-center gap-2 text-sm border border-primary/40 text-primary rounded-full py-3.5 hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50">
+                        <Globe className="w-4 h-4" />
+                        {submitting ? "Processing..." : "Cash on Delivery"}
+                      </button>
+                    )}
+                    <button type="button" onClick={handleWhatsAppOrder} disabled={submitting}
+                      className={`flex items-center justify-center gap-2 text-sm rounded-full py-3.5 transition-all duration-300 disabled:opacity-50 ${user
+                        ? "border border-border text-muted-foreground hover:border-primary hover:text-primary"
+                        : "bg-primary text-primary-foreground hover:bg-gold-glow"
+                        }`}>
+                      <MessageCircle className="w-4 h-4" />
+                      {submitting ? "Processing..." : "Order via WhatsApp"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-
-        {/* Form */}
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Customer Name *</label>
-            <input name="name" value={form.name} onChange={handleChange} required maxLength={100}
-              className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-              placeholder="Your full name" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Phone Number *</label>
-            <input name="phone" value={form.phone} onChange={handleChange} required maxLength={20}
-              className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-              placeholder="03XX XXXXXXX" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Delivery Address *</label>
-            <input name="address" value={form.address} onChange={handleChange} required maxLength={200}
-              className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-              placeholder="Full delivery address" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">City *</label>
-            <input name="city" value={form.city} onChange={handleChange} required maxLength={50}
-              className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors"
-              placeholder="Your city" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Notes (optional)</label>
-            <textarea name="notes" value={form.notes} onChange={handleChange} maxLength={500} rows={3}
-              className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors resize-none"
-              placeholder="Any special instructions..." />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-            {user && (
-              <button type="button" onClick={handleWebsiteOrder} disabled={submitting}
-                className="flex items-center justify-center gap-2 text-sm bg-primary text-primary-foreground rounded-full py-3.5 hover:bg-gold-glow transition-all duration-300 disabled:opacity-50">
-                <Globe className="w-4 h-4" />
-                {submitting ? "Processing..." : "Order via Website"}
-              </button>
-            )}
-            <button type="button" onClick={handleWhatsAppOrder} disabled={submitting}
-              className={`flex items-center justify-center gap-2 text-sm rounded-full py-3.5 transition-all duration-300 disabled:opacity-50 ${user
-                ? "border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground"
-                : "bg-primary text-primary-foreground hover:bg-gold-glow"
-                }`}>
-              <MessageCircle className="w-4 h-4" />
-              {submitting ? "Processing..." : "Order via WhatsApp"}
-            </button>
-          </div>
-        </form>
       </div>
     </Layout>
   );
