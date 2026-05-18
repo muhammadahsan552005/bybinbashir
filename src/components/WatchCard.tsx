@@ -1,15 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { Product } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const WatchCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const navigate = useNavigate();
   const outOfStock = product.stock_quantity <= 0;
+  const isFavorited = isInWishlist(product.id);
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -43,6 +52,15 @@ const WatchCard = ({ product, index = 0 }: { product: Product; index?: number })
         <div className="aspect-square overflow-hidden bg-secondary rounded-t-2xl relative flex-shrink-0">
           <img src={product.images[0]} alt={product.product_name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+            
+          <button 
+            onClick={handleToggleWishlist}
+            className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-10 hover:scale-110
+              ${isFavorited ? 'bg-primary/20 text-primary border border-primary/30 shadow-[0_0_15px_-3px_hsl(var(--primary)/0.3)]' : 'bg-background/40 text-foreground/70 hover:bg-background/60 hover:text-foreground border border-transparent'}`}
+          >
+            <Heart className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-primary' : ''}`} />
+          </button>
+
           {outOfStock && (
             <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
               <span className="text-xs font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-full px-4 py-1.5">
