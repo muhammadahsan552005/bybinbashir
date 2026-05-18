@@ -5,7 +5,7 @@ import FloatingSupport from "@/components/FloatingSupport";
 import ProductReviews from "@/components/ProductReviews";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
-import { ShoppingBag, ChevronLeft } from "lucide-react";
+import { ShoppingBag, ChevronLeft, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -56,6 +56,31 @@ const ProductDetail = () => {
     addToCart(product);
     toast.success(`${product.product_name} added to cart`);
     navigate("/cart");
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `${product?.product_name} | ByBinBashir`,
+      text: `Check out this exquisite timepiece: ${product?.product_name}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.error("Error sharing:", err);
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        toast.success("Link copied to clipboard!");
+      } catch (err) {
+        toast.error("Failed to copy link");
+      }
+    }
   };
 
   return (
@@ -119,6 +144,16 @@ const ProductDetail = () => {
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>{outOfStock ? "Out of Stock" : "Add to Cart"}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleShare}
+                    className="flex items-center justify-center p-3.5 text-foreground border border-border rounded-full hover:border-primary hover:text-primary transition-all duration-300"
+                    aria-label="Share product">
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Share Product</TooltipContent>
               </Tooltip>
             </div>
           </motion.div>
