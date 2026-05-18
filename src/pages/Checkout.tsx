@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MessageCircle, Globe } from "lucide-react";
-import confetti from "canvas-confetti";
 import emailjs from "@emailjs/browser";
 
 const Checkout = () => {
@@ -76,33 +75,6 @@ const Checkout = () => {
     return true;
   };
 
-  const fireConfetti = () => {
-    const duration = 3000;
-    const end = Date.now() + duration;
-
-    const frame = () => {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ["#cca35e", "#fff", "#1a1a1a"]
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ["#cca35e", "#fff", "#1a1a1a"]
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    };
-    frame();
-  };
-
   const buildWhatsAppMessage = () => {
     const orderLines = items
       .map(
@@ -150,8 +122,6 @@ const Checkout = () => {
 
       const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
       if (itemsErr) throw itemsErr;
-
-      fireConfetti();
 
       const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID";
       const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID";
@@ -219,7 +189,6 @@ const Checkout = () => {
       const whatsappUrl = `https://wa.me/923276266204?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
       
-      fireConfetti();
       clearCart();
       toast.success("Order placed! WhatsApp opened.");
       navigate("/");

@@ -12,10 +12,11 @@ import { Search } from "lucide-react";
 const Shop = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
-  const [activeCollection, setActiveCollection] = useState<string>("All");
+  const [activeCollections, setActiveCollections] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState<string>("default");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const [inStockOnly, setInStockOnly] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: products, isLoading } = useProducts();
@@ -28,8 +29,8 @@ const Shop = () => {
 
   const filtered = useMemo(() => {
     let result = products || [];
-    if (activeCollection !== "All") {
-      result = result.filter((p) => p.collection_name === activeCollection);
+    if (activeCollections.length > 0) {
+      result = result.filter((p) => activeCollections.includes(p.collection_name || ""));
     }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
@@ -41,10 +42,13 @@ const Shop = () => {
       );
     }
     result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+    if (inStockOnly) {
+      result = result.filter((p) => p.stock_quantity > 0);
+    }
     if (sortBy === "low-high") result = [...result].sort((a, b) => a.price - b.price);
     else if (sortBy === "high-low") result = [...result].sort((a, b) => b.price - a.price);
     return result;
-  }, [activeCollection, searchQuery, products, sortBy, priceRange]);
+  }, [activeCollections, searchQuery, products, sortBy, priceRange, inStockOnly]);
 
   return (
     <Layout>
@@ -68,8 +72,8 @@ const Shop = () => {
           </div>
           <SearchFilters showFilters={showFilters} setShowFilters={setShowFilters}
             sortBy={sortBy} setSortBy={setSortBy} priceRange={priceRange} setPriceRange={setPriceRange}
-            maxPrice={maxPrice} collections={collections} activeCollection={activeCollection}
-            setActiveCollection={setActiveCollection} showCollectionFilter={true} />
+            maxPrice={maxPrice} collections={collections} activeCollections={activeCollections}
+            setActiveCollections={setActiveCollections} inStockOnly={inStockOnly} setInStockOnly={setInStockOnly} showCollectionFilter={true} />
         </div>
 
         {showFilters && <div className="mb-6" />}
@@ -78,7 +82,7 @@ const Shop = () => {
           <p className="text-sm text-muted-foreground text-center py-20">Loading products...</p>
         ) : (
           <>
-            <motion.div key={activeCollection + searchQuery + sortBy + priceRange.join("-")}
+            <motion.div key={activeCollections.join() + searchQuery + sortBy + priceRange.join("-") + inStockOnly}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}
               className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
               {filtered.map((p, i) => (
