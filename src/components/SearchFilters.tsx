@@ -25,9 +25,8 @@ const SearchFilters = ({
     <>
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm transition-all ${
-          showFilters ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"
-        }`}
+        className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm transition-all ${showFilters ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"
+          }`}
       >
         <SlidersHorizontal className="w-4 h-4" />
         <span className="hidden sm:inline">Filters</span>
@@ -46,9 +45,8 @@ const SearchFilters = ({
                   { value: "high-low", label: "High to Low" },
                 ].map((opt) => (
                   <button key={opt.value} onClick={() => setSortBy(opt.value)}
-                    className={`text-xs px-4 py-2 rounded-full border transition-all ${
-                      sortBy === opt.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"
-                    }`}>{opt.label}</button>
+                    className={`text-xs px-4 py-2 rounded-full border transition-all ${sortBy === opt.value ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"
+                      }`}>{opt.label}</button>
                 ))}
               </div>
             </div>
@@ -66,9 +64,8 @@ const SearchFilters = ({
               <div className="flex flex-wrap gap-2">
                 {["All", ...(collections.map((c) => c.collection_name) || [])].map((name) => (
                   <button key={name} onClick={() => setActiveCollection(name)}
-                    className={`text-xs px-4 py-2 rounded-full border transition-all ${
-                      activeCollection === name ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"
-                    }`}>{name}</button>
+                    className={`text-xs px-4 py-2 rounded-full border transition-all ${activeCollection === name ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/30"
+                      }`}>{name}</button>
                 ))}
               </div>
             </div>

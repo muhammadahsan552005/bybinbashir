@@ -249,11 +249,10 @@ const Checkout = () => {
               </button>
             )}
             <button type="button" onClick={handleWhatsAppOrder} disabled={submitting}
-              className={`flex items-center justify-center gap-2 text-sm rounded-full py-3.5 transition-all duration-300 disabled:opacity-50 ${
-                user
-                  ? "border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground"
-                  : "bg-primary text-primary-foreground hover:bg-gold-glow"
-              }`}>
+              className={`flex items-center justify-center gap-2 text-sm rounded-full py-3.5 transition-all duration-300 disabled:opacity-50 ${user
+                ? "border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground"
+                : "bg-primary text-primary-foreground hover:bg-gold-glow"
+                }`}>
               <MessageCircle className="w-4 h-4" />
               {submitting ? "Processing..." : "Order via WhatsApp"}
             </button>

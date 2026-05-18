@@ -48,11 +48,10 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm tracking-wide px-4 py-2 rounded-full transition-all duration-300 ${
-                  location.pathname === item.path
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`text-sm tracking-wide px-4 py-2 rounded-full transition-all duration-300 ${location.pathname === item.path
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 {item.label}
               </Link>
@@ -113,9 +112,8 @@ const Navbar = () => {
         <nav className="lg:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 pb-6 pt-2 flex flex-col gap-1">
           {navItems.map((item) => (
             <Link key={item.path} to={item.path} onClick={() => setMobileOpen(false)}
-              className={`text-sm tracking-wide px-4 py-3 rounded-xl transition-all ${
-                location.pathname === item.path ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
-              }`}>
+              className={`text-sm tracking-wide px-4 py-3 rounded-xl transition-all ${location.pathname === item.path ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                }`}>
               {item.label}
             </Link>
           ))}
