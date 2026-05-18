@@ -81,8 +81,20 @@ const AdminProducts = () => {
     }
   };
 
+  const confirmDeleteProduct = (id: string) => {
+    toast("Delete this product?", {
+      action: {
+        label: "Delete",
+        onClick: () => handleDelete(id),
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
+  };
+
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this product?")) return;
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) {
       toast.error("Failed to delete");
@@ -112,12 +124,43 @@ const AdminProducts = () => {
     }
   };
 
-  const handleDeleteImage = async (imageUrl: string, productId: string) => {
-    const path = imageUrl.split("/product-images/")[1];
-    if (path) await supabase.storage.from("product-images").remove([path]);
-    await supabase.from("product_images").delete().eq("image_url", imageUrl).eq("product_id", productId);
-    queryClient.invalidateQueries({ queryKey: ["products"] });
-    toast.success("Image deleted");
+  const confirmDeleteImage = (imageUrl: string, productId: string) => {
+    toast("Are you sure you want to delete this image?", {
+      action: {
+        label: "Delete",
+        onClick: () => executeDeleteImage(imageUrl, productId),
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
+  };
+
+  const executeDeleteImage = async (imageUrl: string, productId: string) => {
+    try {
+      const baseUrl = imageUrl.split("?")[0];
+      const path = baseUrl.split("/product-images/")[1];
+      
+      if (path) {
+        await supabase.storage.from("product-images").remove([path]);
+      }
+      
+      const { data, error: dbErr } = await supabase.from("product_images").delete().like("image_url", `${baseUrl}%`).eq("product_id", productId).select();
+      
+      if (dbErr) throw dbErr;
+      if (!data || data.length === 0) {
+        throw new Error("Action blocked by database. Please ensure 'product_images' table has a DELETE RLS policy.");
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      if (viewProduct?.id === productId) {
+        setViewProduct({ ...viewProduct, images: viewProduct.images.filter((img: string) => img !== imageUrl) });
+      }
+      toast.success("Image deleted");
+    } catch (err: any) {
+      toast.error(`Delete failed: ${err.message || JSON.stringify(err)}`);
+    }
   };
 
   return (
@@ -148,7 +191,12 @@ const AdminProducts = () => {
                 {viewProduct.images?.length > 0 && viewProduct.images[0] !== "/placeholder.svg" && (
                   <div className="flex gap-2 flex-wrap mb-4">
                     {viewProduct.images.map((img: string, i: number) => (
-                      <img key={i} src={img} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                      <div key={i} className="relative group">
+                        <img src={img} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                        <button onClick={() => confirmDeleteImage(img, viewProduct.id)} className="absolute top-1.5 right-1.5 bg-destructive/90 hover:bg-destructive text-destructive-foreground p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-sm">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -290,7 +338,7 @@ const AdminProducts = () => {
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button onClick={() => handleDelete(p.id)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                            <button onClick={() => confirmDeleteProduct(p.id)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </TooltipTrigger>

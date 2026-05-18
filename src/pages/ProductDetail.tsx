@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import WatchCard from "@/components/WatchCard";
 import FloatingSupport from "@/components/FloatingSupport";
+import ProductReviews from "@/components/ProductReviews";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
 import { ShoppingBag, ChevronLeft } from "lucide-react";
@@ -122,6 +123,8 @@ const ProductDetail = () => {
             </div>
           </motion.div>
         </div>
+
+        <ProductReviews productId={product.id} />
 
         {relatedProducts.length > 0 && (
           <section className="mt-20">
