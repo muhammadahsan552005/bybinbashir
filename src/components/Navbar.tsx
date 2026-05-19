@@ -38,8 +38,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className={`fixed top-6 left-4 right-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-[800px] z-50 bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-300 overflow-hidden ${mobileOpen || searchOpen ? 'rounded-3xl' : 'rounded-full'}`}>
+      <div className="px-6">
         <div className="flex items-center justify-between h-16">
           <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
