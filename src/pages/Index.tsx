@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Package, Globe, MessageCircle, Truck, Shield, Clock } from "lucide-react";
 import heroWatch from "@/assets/hero-watch.jpg";
 import logo from "@/assets/logo.jpg";
@@ -9,7 +9,7 @@ import { useCollections } from "@/hooks/useCollections";
 import { useRecentlyViewedIds } from "@/hooks/useRecentlyViewed";
 import WatchCard from "@/components/WatchCard";
 import BrandCard from "@/components/BrandCard";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 
 const features = [
   { icon: Truck, label: "Nationwide Shipping", desc: "We deliver premium watches to every corner of Pakistan. Fast, secure, and tracked." },
@@ -27,6 +27,16 @@ const Index = () => {
   const { data: collections } = useCollections();
   const recentIds = useRecentlyViewedIds();
   const [activeTab, setActiveTab] = useState<FeaturedTab>("featured");
+
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const displayProducts = useMemo(() => {
     const all = products || [];
@@ -63,31 +73,56 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative h-screen overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={heroWatch} alt="Luxury watch macro detail" className="w-full h-full object-cover animate-slow-zoom" />
+      <section ref={heroRef} className="relative h-[100svh] overflow-hidden">
+        <motion.div style={{ y: backgroundY }} className="absolute inset-0">
+          <img src={heroWatch} alt="Luxury watch macro detail" className="w-full h-[120%] object-cover animate-slow-zoom -mt-20" />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
-        </div>
+        </motion.div>
+        
         <div className="relative h-full flex flex-col justify-end pb-20 px-6 sm:px-8 lg:px-16 max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }}>
-            <span className="inline-block text-[10px] tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
+          <motion.div style={{ y: textY, opacity: textOpacity }} className="will-change-transform">
+            <motion.span 
+              initial={{ opacity: 0, y: 30 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-block text-[10px] tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6"
+            >
               BYBINBASHIR — PREMIUM WATCHES
-            </span>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-light text-foreground leading-[1.1] tracking-wide mb-6">
+            </motion.span>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 40 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl sm:text-5xl lg:text-7xl font-light text-foreground leading-[1.1] tracking-wide mb-6"
+            >
               Premium Watches<br />for Every Moment
-            </h1>
-            <p className="text-sm text-muted-foreground max-w-md mb-8 leading-relaxed">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="text-sm text-muted-foreground max-w-md mb-8 leading-relaxed"
+            >
               Curated collection of luxury timepieces from world-renowned brands. Nationwide delivery across Pakistan.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/shop" className="text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full hover:bg-gold-glow transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]">
-                Explore Collection
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link to="/shop" className="group relative text-sm bg-primary text-primary-foreground px-8 py-3.5 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_4px_20px_-4px_hsl(43_56%_52%/0.5)]">
+                <span className="relative z-10">Explore Collection</span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
               </Link>
               <a href="https://wa.me/923276266204" target="_blank" rel="noopener noreferrer" className="text-sm border border-primary/40 text-primary px-8 py-3.5 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                 Contact Us
               </a>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
