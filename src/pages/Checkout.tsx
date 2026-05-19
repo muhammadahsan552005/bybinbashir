@@ -26,7 +26,7 @@ const StripePaymentForm = ({ onPaymentSuccess, disabled }: { onPaymentSuccess: (
     if (!cardElement) return;
 
     setProcessing(true);
-    
+
     // Create token purely to validate the card UI securely on the frontend.
     const { error } = await stripe.createToken(cardElement);
 
@@ -64,7 +64,7 @@ const StripePaymentForm = ({ onPaymentSuccess, disabled }: { onPaymentSuccess: (
           },
         }} />
       </div>
-      <button 
+      <button
         type="button"
         onClick={handleSubmit}
         disabled={disabled || processing || !stripe}
@@ -136,7 +136,17 @@ const Checkout = () => {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    if (e.target.name === "phone") {
+      let val = e.target.value.replace(/\D/g, "");
+      
+      // Auto-format as 03XX XXXXXXX
+      if (val.length > 11) val = val.slice(0, 11);
+      if (val.length > 4) val = `${val.slice(0, 4)} ${val.slice(4)}`;
+      
+      setForm({ ...form, phone: val });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    }
   };
 
   const validateForm = () => {
@@ -144,6 +154,23 @@ const Checkout = () => {
       toast.error("Please fill in all required fields");
       return false;
     }
+
+    const rawPhone = form.phone.replace(/\D/g, "");
+    if (rawPhone.length !== 11 || !rawPhone.startsWith("03")) {
+      toast.error("Please enter a valid Pakistani phone number (e.g., 0300 1234567)");
+      return false;
+    }
+
+    if (form.name.length < 3) {
+      toast.error("Name must be at least 3 characters long");
+      return false;
+    }
+
+    if (form.address.length < 10) {
+      toast.error("Please provide a more detailed delivery address");
+      return false;
+    }
+
     return true;
   };
 
@@ -259,7 +286,7 @@ const Checkout = () => {
       const message = buildWhatsAppMessage();
       const whatsappUrl = `https://wa.me/923276266204?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
-      
+
       clearCart();
       toast.success("Order placed! WhatsApp opened.");
       navigate("/");
@@ -306,13 +333,13 @@ const Checkout = () => {
                 <span className="text-sm font-medium text-foreground">Total</span>
                 <span className="text-xl font-medium text-primary">PKR {totalPrice.toLocaleString()}</span>
               </div>
-              
+
               {user && (
                 <div className="mt-6">
                   <Elements stripe={stripePromise}>
-                    <StripePaymentForm 
-                      onPaymentSuccess={() => handleWebsiteOrder("paid")} 
-                      disabled={submitting || !form.name.trim() || !form.phone.trim() || !form.address.trim() || !form.city.trim()} 
+                    <StripePaymentForm
+                      onPaymentSuccess={() => handleWebsiteOrder("paid")}
+                      disabled={submitting || !form.name.trim() || !form.phone.trim() || !form.address.trim() || !form.city.trim()}
                     />
                   </Elements>
                 </div>
