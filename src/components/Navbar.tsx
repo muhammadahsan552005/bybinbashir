@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo.jpg";
 
 const navItems = [
@@ -111,29 +112,45 @@ const Navbar = () => {
         </div>
       </div>
 
-      {searchOpen && (
-        <div className="border-t border-border/50 bg-background/95 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <form onSubmit={handleSearch} className="flex items-center gap-3">
-              <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search by product name or code..." className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-sm" autoFocus />
-              <button type="button" onClick={() => setSearchOpen(false)} className="text-muted-foreground hover:text-foreground text-sm">Cancel</button>
-            </form>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="border-t border-border/50 bg-background/95 backdrop-blur-xl overflow-hidden"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <form onSubmit={handleSearch} className="flex items-center gap-3">
+                <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search by product name or code..." className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-sm" autoFocus />
+                <button type="button" onClick={() => setSearchOpen(false)} className="text-muted-foreground hover:text-foreground text-sm">Cancel</button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {mobileOpen && (
-        <nav className="lg:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 pb-6 pt-2 flex flex-col gap-1">
-          {navItems.map((item) => (
-            <Link key={item.path} to={item.path} onClick={() => setMobileOpen(false)}
-              className={`text-sm tracking-wide px-4 py-3 rounded-xl transition-all ${location.pathname === item.path ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
-                }`}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 pb-6 pt-2 flex flex-col gap-1 overflow-hidden"
+          >
+            {navItems.map((item) => (
+              <Link key={item.path} to={item.path} onClick={() => setMobileOpen(false)}
+                className={`text-sm tracking-wide px-4 py-3 rounded-xl transition-all ${location.pathname === item.path ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                  }`}>
+                {item.label}
+              </Link>
+            ))}
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
