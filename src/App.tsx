@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import AnimatedRoutes from "@/components/AnimatedRoutes";
 import ScrollToTop from "@/components/ScrollToTop";
+import Preloader from "@/components/Preloader";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
           <TooltipProvider>
           <Toaster />
           <Sonner />
+          <Preloader />
           <BrowserRouter>
             <ScrollToTop />
             <AnimatedRoutes />
