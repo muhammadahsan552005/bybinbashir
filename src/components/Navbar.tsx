@@ -114,7 +114,7 @@ const Navbar = () => {
 
       <AnimatePresence>
         {searchOpen && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -134,7 +134,7 @@ const Navbar = () => {
 
       <AnimatePresence>
         {mobileOpen && (
-          <motion.nav 
+          <motion.nav
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
