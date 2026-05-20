@@ -1,73 +1,56 @@
-# Welcome to your Lovable project
+# ByBinBashir Luxury Watches
 
-## Project info
+Welcome to the **ByBinBashir** premium e-commerce platform codebase, built using React v19, Tailwind CSS v4, Vite, and Supabase.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Follow the instructions below to set up and run the application locally on your machine.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Local Setup & Installation
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/muhammadahsan552005/bybinbashir.git
+cd bybinbashir
 ```
 
-**Edit a file directly in GitHub**
+### Step 2: Configure Environment Variables
+Create a `.env` file in the root of the project by copying the example file:
+```bash
+cp .env.example .env
+```
+Open the newly created `.env` file and populate it with the required credentials:
+```env
+# Supabase Configuration
+VITE_SUPABASE_URL="<your-supabase-url>"
+VITE_SUPABASE_ANON_KEY="<your-supabase-anon-key>"
+VITE_SUPABASE_PROJECT_ID="<your-supabase-project-id>"
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# EmailJS Configuration (for checkout notifications)
+VITE_EMAILJS_SERVICE_ID="<your-email-service-id>"
+VITE_EMAILJS_TEMPLATE_ID="<your-email-template-id>"
+VITE_EMAILJS_PUBLIC_KEY="<your-email-public-key>"
+```
 
-**Use GitHub Codespaces**
+### Step 3: Install Dependencies
+Install all package dependencies. Peer dependency resolution is automated via the root `.npmrc` file, so a standard install is fully sufficient:
+```bash
+npm install
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Step 4: Run the Development Server
+Start the local server:
+```bash
+npm run dev
+```
+The application will launch and be accessible at:
+👉 **[http://localhost:8080](http://localhost:8080)**
 
-## What technologies are used for this project?
+---
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🛠️ Build & Verification
+To test compile and build the production bundle locally:
+```bash
+npm run build
+```
+This compiles the website with native Tailwind CSS v4 compilation, generating optimized, minified production assets inside the `/dist` directory.
